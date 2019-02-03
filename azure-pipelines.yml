@@ -36,4 +36,4 @@ steps:
 - task: PublishPipelineArtifact@0
   inputs:
     artifactName: 'distbe'
-    targetPath: '$(build.artifactStagingDirectory)\WebApp.zip'
+    targetPath: '$(build.artifactStagingDirectory)'
