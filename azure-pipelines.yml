@@ -33,7 +33,7 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
-- task: PublishPipelineArtifact@0
-  inputs:
-    artifactName: 'distbe'
-    targetPath: '$(build.artifactStagingDirectory)'
+- task: PublishBuildArtifacts@1
+  inputs:    
+    PathtoPublish: '$(build.artifactStagingDirectory)'
+    name: 'drop'
