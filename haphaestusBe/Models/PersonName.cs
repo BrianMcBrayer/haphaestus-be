@@ -1,10 +1,14 @@
-﻿namespace haphaestusBe.Models
+﻿using MongoDB.Bson.Serialization.Attributes;
+
+namespace haphaestusBe.Models
 {
     public class PersonName
     {
-        public string FirstName { get; }
+        [BsonElement]
+        public string FirstName { get; set;  }
 
-        public string LastName { get; }
+        [BsonElement]
+        public string LastName { get; set;  }
 
         public PersonName(
             string firstName,

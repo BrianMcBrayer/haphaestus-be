@@ -1,21 +1,28 @@
-﻿using System.Collections.Generic;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using System.Collections.Generic;
 
 namespace haphaestusBe.Models
 {
     public class Employee
     {
-        public int Id { get; }
+        [BsonElement]
+        [BsonId]
+        public int? Id { get; set;  }
 
-        public PersonName Name { get; }
+        [BsonElement]
+        public PersonName Name { get; set;  }
 
-        public bool IsSpouseEnabled { get; }
+        [BsonElement]
+        public bool IsSpouseEnabled { get; set;  }
 
-        public PersonName Spouse { get; }
+        [BsonElement]
+        public PersonName Spouse { get; set;  }
 
-        public IReadOnlyList<PersonName> Dependents { get; }
+        [BsonElement]
+        public IReadOnlyList<PersonName> Dependents { get; set;  }
 
         public Employee(
-            int id,
+            int? id,
             PersonName name,
             bool isSpouseEnabled,
             PersonName spouse,
