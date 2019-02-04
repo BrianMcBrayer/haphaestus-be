@@ -19,7 +19,7 @@ namespace haphaestusBe
         {
             string connectionString = ConfigurationManager.AppSettings["MongoDBConnectionString"];
             var client = new MongoClient(connectionString);
-            var database = client.GetDatabase("HaphaestusData");
+            var database = client.GetDatabase("haphaestusdata");
             var collection = database.GetCollection<Employee>("Employees");
 
             var employees = await collection
