@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Threading.Tasks;
+using haphaestusBe.DataProviders;
 using haphaestusBe.Models;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
@@ -16,17 +17,20 @@ namespace haphaestusBe
 {
     public static class UpdateEmployee
     {
+        /// <summary>
+        /// Updates a single existing employee
+        /// </summary>
+        /// <param name="req">The request containing the existing employee</param>
+        /// <param name="log">The logger</param>
+        /// <returns>Returns a response with the updated employee</returns>
         [FunctionName("UpdateEmployee")]
         public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]HttpRequestMessage req, TraceWriter log)
         {
+            // when Azure Functions allows dependency injection natively, refactor this
+            var employeeService = new EmployeeDataProvider();
             var employeeToUpdate = await req.Content.ReadAsAsync<Employee>();
 
-            string connectionString = ConfigurationManager.AppSettings["MongoDBConnectionString"];
-            var client = new MongoClient(connectionString);
-            var database = client.GetDatabase("haphaestusdata");
-            var collection = database.GetCollection<Employee>("Employees");
-
-            await collection.ReplaceOneAsync(e => e.Id == employeeToUpdate.Id, employeeToUpdate);
+            await employeeService.UpdateEmployee(employeeToUpdate);
 
             return req.CreateResponse(HttpStatusCode.OK, employeeToUpdate, new JsonMediaTypeFormatter
             {

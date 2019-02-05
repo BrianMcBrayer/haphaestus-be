@@ -28,8 +28,6 @@ namespace haphaestusBe.Models
             PersonName spouse,
             IReadOnlyList<PersonName> dependents)
         {
-            // TODO Guards
-
             Id = id;
             Name = name;
             IsSpouseEnabled = isSpouseEnabled;

@@ -1,3 +1,4 @@
+using haphaestusBe.DataProviders;
 using haphaestusBe.Models;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
@@ -15,19 +16,20 @@ namespace haphaestusBe
 {
     public static class AddEmployee
     {
+        /// <summary>
+        /// Adds an employee
+        /// </summary>
+        /// <param name="req">The request data</param>
+        /// <param name="log">The logger</param>
+        /// <returns>Returns a response with the added employee</returns>
         [FunctionName("AddEmployee")]
         public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]HttpRequestMessage req, TraceWriter log)
         {
+            // Refactor this to DI when Azure Functions supports it
+            var employeeDataProvider = new EmployeeDataProvider();
             var newEmployee = await req.Content.ReadAsAsync<Employee>();
 
-            newEmployee.Id = new Random().Next(1_000_000_000);
-
-            string connectionString = ConfigurationManager.AppSettings["MongoDBConnectionString"];
-            var client = new MongoClient(connectionString);
-            var database = client.GetDatabase("haphaestusdata");
-            var collection = database.GetCollection<Employee>("Employees");
-
-            await collection.InsertOneAsync(newEmployee);
+            await employeeDataProvider.AddEmployee(newEmployee);
 
             return req.CreateResponse(HttpStatusCode.OK, newEmployee, new JsonMediaTypeFormatter
             {

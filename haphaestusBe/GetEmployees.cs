@@ -1,3 +1,4 @@
+using haphaestusBe.DataProviders;
 using haphaestusBe.Models;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
@@ -14,23 +15,20 @@ namespace haphaestusBe
 {
     public static class GetEmployees
     {
+        /// <summary>
+        /// Gets all employees, sorted by last name and then by first name. Note that sorting is case sensitive.
+        /// </summary>
+        /// <param name="req">The request</param>
+        /// <param name="log">The logger</param>
+        /// <returns>Returns a response with all the employees</returns>
         [FunctionName("GetEmployees")]
         public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]HttpRequestMessage req, TraceWriter log)
         {
-            string connectionString = ConfigurationManager.AppSettings["MongoDBConnectionString"];
-            var client = new MongoClient(connectionString);
-            var database = client.GetDatabase("haphaestusdata");
-            var collection = database.GetCollection<Employee>("Employees");
+            var employeesDataProvider = new EmployeeDataProvider();
 
-            var employees = await collection
-                .FindAsync(filter => true, new FindOptions<Employee, Employee>
-                {
-                    Sort = Builders<Employee>.Sort
-                        .Ascending(e => e.Name.LastName)
-                        .Ascending(e => e.Name.FirstName)
-                });
+            var employees = await employeesDataProvider.GetEmployees();
 
-            return req.CreateResponse(HttpStatusCode.OK, employees.ToEnumerable(), new JsonMediaTypeFormatter
+            return req.CreateResponse(HttpStatusCode.OK, employees, new JsonMediaTypeFormatter
             {
                 SerializerSettings = new Newtonsoft.Json.JsonSerializerSettings
                 {
