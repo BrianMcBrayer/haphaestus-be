@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace haphaestusBe.Test
 {
     [TestFixture]
-    class AddEmployeeTests
+    public class AddEmployeeTests
     {
         private IEmployeeDataProvider _employeeDataProvider;
         private IHttpResponseCreator _httpResponseCreator;
