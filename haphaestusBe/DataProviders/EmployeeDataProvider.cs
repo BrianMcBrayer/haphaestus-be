@@ -7,12 +7,20 @@ using System.Threading.Tasks;
 
 namespace haphaestusBe.DataProviders
 {
-    public class EmployeeDataProvider
+    /// <summary>
+    /// Gets, adds, and updated employee data
+    /// </summary>
+    public class EmployeeDataProvider : IEmployeeDataProvider
     {
+        /// <summary>
+        /// Gets all employees
+        /// </summary>
+        /// <returns>An <see cref="IEnumerable{T}"/> of all <see cref="Employee"/>s</returns>
         public async Task<IEnumerable<Employee>> GetEmployees()
         {
             var collection = GetEmployeesCollection();
 
+            // TODO Refactor this to fetch via batches manually so we don't keep the connection open
             var employees = (await collection
                 .FindAsync(filter => true, new FindOptions<Employee, Employee>
                 {
@@ -24,6 +32,11 @@ namespace haphaestusBe.DataProviders
             return employees;
         }
 
+        /// <summary>
+        /// Adds a new employee
+        /// </summary>
+        /// <param name="newEmployee">The new employee to add</param>
+        /// <returns>Returns the added employee</returns>
         public async Task<Employee> AddEmployee(Employee newEmployee)
         {
             var collection = GetEmployeesCollection();
@@ -35,6 +48,11 @@ namespace haphaestusBe.DataProviders
             return newEmployee;
         }
 
+        /// <summary>
+        /// Updates an existing employee
+        /// </summary>
+        /// <param name="employeeToUpdate">The existing employee to update</param>
+        /// <returns>Returns the updated employee</returns>
         public async Task<Employee> UpdateEmployee(Employee employeeToUpdate)
         {
             var collection = GetEmployeesCollection();
